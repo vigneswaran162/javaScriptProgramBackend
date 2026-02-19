@@ -1,0 +1,11 @@
+{
+  "programs": [
+    {
+      "id": 1771479454579,
+      "Title": "Total Sales per Customer",
+      "Input": "<p>const orders = [<br>&nbsp;{ orderId: 1, customer: \"John\", amount: 100 },<br>&nbsp;{ orderId: 2, customer: \"Mary\", amount: 200 },<br>&nbsp;{ orderId: 3, customer: \"John\", amount: 150 },<br>&nbsp;{ orderId: 4, customer: \"Mary\", amount: 50 }<br>];<br>&nbsp;</p>",
+      "Output": "<p>[<br>&nbsp;{ customer: \"John\", totalAmount: 250 },<br>&nbsp;{ customer: \"Mary\", totalAmount: 250 }<br>]</p>",
+      "Program": "<p>let sumarray1 = orders.reduce((acc,curr)=&gt;{<br>&nbsp;if(acc[curr.customer]){<br>&nbsp; &nbsp; &nbsp;acc[curr.customer].TotalAmount += curr.amount<br>&nbsp;}else{<br>&nbsp; &nbsp; &nbsp;acc[curr.customer] = {customer:curr.customer , TotalAmount:curr.amount }<br>&nbsp;}&nbsp;<br>&nbsp;return acc<br>},{})</p>"
+    }
+  ]
+}

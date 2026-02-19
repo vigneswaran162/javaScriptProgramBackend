@@ -25,6 +25,11 @@ app.get('/GetAllPrograms', (req, res) => {
   res.json(data.programs);
 });
 
+app.get('/', (req, res) => {
+  const data = readData();
+  res.json(data.programs);
+});
+
 // ✅ INSERT
 app.post('/ProgramsCreate', (req, res) => {
   const data = readData();

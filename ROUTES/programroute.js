@@ -3,22 +3,21 @@ const router = express.Router();
 const {ProgramMaster} = require("../MODELS/programmastermodel")
 
 
-router.get('/GetAllPrograms', async function (req, res) {
+
+
+router.get('/GetAllPrograms', async (req, res) => {
   try {
-    const resp = await ProgramMaster.find({});
-    res.status(200).json({
-      Boolval: true,
-      data: resp,
-      returnerror: ""
-    });
+    const data = await ProgramMaster.find();
+    res.json(data);
   } catch (err) {
-  
+    console.log("ERROR:", err);
     res.status(500).json({
       Boolval: false,
       returnerror: err.message
     });
   }
-}
-)
+});
+
+
 
 module.exports = router;

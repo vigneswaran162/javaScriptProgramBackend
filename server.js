@@ -1,88 +1,62 @@
-const express = require('express');
-const fs = require('fs');
+const express = require("express");
+const bodyParser = require('body-parser')
+const app = express()
 const cors = require('cors');
+const mongoose = require("mongoose");
+const dotenv = require('dotenv');
+dotenv.config();
 
-const app = express();
-app.use(cors());
+app.use(bodyParser.urlencoded({
+    limit: "50mb",
+    extended: true,
+    parameterLimit: 50000
+}))
+
+app.use(bodyParser.json({ limit: "50mb" })); 
+
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors({
+    origin: '*',
+    methods: 'GET, POST, PUT, DELETE',
+    allowedHeaders: 'Content-Type, Authorization',
+  }));
 
-const filePath = './db.json';
 
-// 🔹 Read data
-function readData() {
-  const data = fs.readFileSync(filePath);
-  return JSON.parse(data);
+  
+
+const PORT = process.env.PORT || 4000
+const mongoURI = process.env.MONGO_URI;
+
+
+if (!mongoURI) {
+  console.error("MongoDB connection string is missing!");
+  process.exit(1);
 }
 
-// 🔹 Write data
-function writeData(data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-}
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("MongoDB Connected");
+  } catch (err) {
+    console.error("DB Error:", err);
+    process.exit(1);
+  }
+};
 
-// ✅ GET ALL
-app.get('/GetAllPrograms', (req, res) => {
-  const data = readData();
-  res.json(data.programs);
-});
+connectDB();
 
 app.get('/', (req, res) => {
-  const data = readData();
-  res.json(data.programs);
+    res.send("API Working");
 });
 
-// ✅ INSERT
-app.post('/ProgramsCreate', (req, res) => {
-  const data = readData();
-  
-  console.log(req.body)
 
-  const newItem = {
-    id: Date.now(),
-    ...req.body
-  };
+const userroutes = require('./ROUTES/programroute')
+app.use('/api', userroutes);
 
-  data.programs.push(newItem);
-  writeData(data);
 
-  res.json(newItem);
-});
 
-// ✅ UPDATE
-app.put('/programs/:id', (req, res) => {
-  const data = readData();
-
-  const id = parseInt(req.params.id);
-
-  const index = data.programs.findIndex(p => p.id === id);
-
-  if (index === -1) {
-    return res.status(404).send('Not found');
-  }
-
-  data.programs[index] = {
-    id,
-    ...req.body
-  };
-
-  writeData(data);
-
-  res.json(data.programs[index]);
-});
-
-// ✅ DELETE
-app.delete('/programs/:id', (req, res) => {
-  const data = readData();
-
-  const id = parseInt(req.params.id);
-
-  data.programs = data.programs.filter(p => p.id !== id);
-
-  writeData(data);
-
-  res.json({ message: 'Deleted' });
-});
-
-// 🚀 START SERVER
-app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
-});
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });

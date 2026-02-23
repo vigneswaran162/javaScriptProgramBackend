@@ -12,10 +12,24 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// ✅ CONNECT DB FIRST
+// ✅ Connect DB once
+let isConnected = false;
+
+async function ensureDBConnection() {
+  if (!isConnected) {
+    await connectDB();
+    isConnected = true;
+  }
+}
+
 app.use(async (req, res, next) => {
-  await connectDB();
-  next();
+  try {
+    await ensureDBConnection();
+    next();
+  } catch (err) {
+    console.error("DB Connection Error:", err);
+    res.status(500).json({ error: "Database connection failed" });
+  }
 });
 
 // Routes

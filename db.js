@@ -12,7 +12,7 @@ const connectDB = async () => {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(process.env.MONGO_URI).then((mongoose) => {
+    cached.promise = mongoose.connect("mongodb+srv://vickyvicy281:jKeqLtINxK6vtDjz@cluster0.zd12vb3.mongodb.net/DEMODB?retryWrites=true&w=majority&appName=Cluster0").then((mongoose) => {
       console.log("MongoDB Connected");
       return mongoose;
     });
